@@ -17,13 +17,13 @@
           deny all;
       }
 
-      location ~* ^.+\.(rb|log)$ {
+      location ~* ^.+\.(rb|log)${DOLLAR} {
           deny all;
       }
 
       # serve static (compiled) assets directly if they exist (for node production)
       location ~ ^/(assets|images|javascripts|stylesheets|swfs|system)/ {
-          try_files $uri @api_gateway_node;
+          try_files ${DOLLAR}uri @api_gateway_node;
 
           access_log off;
           gzip_static on; # to serve pre-gzipped version
@@ -40,17 +40,17 @@
       }
 
       location / {
-          try_files $uri $uri/ @api_gateway_node;
+          try_files ${DOLLAR}uri ${DOLLAR}uri/ @api_gateway_node;
       }
 
       location @api_gateway_node {
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header Host $http_host;
+          proxy_set_header X-Forwarded-For ${DOLLAR}proxy_add_x_forwarded_for;
+          proxy_set_header Host ${DOLLAR}http_host;
           proxy_redirect off;
           proxy_pass http://api_gateway_node;
           access_log /var/www/api-gateway/log/nginx.access.log;
           error_log /var/www/api-gateway/log/nginx.error.log;
-          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Upgrade ${DOLLAR}http_upgrade;
           proxy_set_header Connection "upgrade";
       }
   }
